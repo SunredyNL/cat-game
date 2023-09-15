@@ -9,15 +9,50 @@ const scaledC = {
     height: canvas.height / 4
 }
 
+const floorCollisions2D = [];
+for (let i = 0; i < floorCollisions.length; i += 32) {
+    floorCollisions2D.push(floorCollisions.slice(i, i + 32))
+}
+
+const collisionBlocks = [];
+floorCollisions2D.forEach((row, y) => {
+    row.forEach((symbol, x) => {
+        if (symbol === 203) {
+            collisionBlocks.push(new CollisionBlock({
+                position: { x: x * 18, y: y * 18 }
+            }))
+        }
+    })
+})
+
+const platformCollisions2D = [];
+for (let i = 0; i < platformCollisions.length; i += 32) {
+    platformCollisions2D.push(platformCollisions.slice(i, i + 32))
+}
+
+const platformCollisionBlocks = [];
+platformCollisions2D.forEach((row, y) => {
+    row.forEach((symbol, x) => {
+        if (symbol === 203) {
+            platformCollisionBlocks.push(new CollisionBlock({
+                position: { x: x * 18, y: y * 18 }
+            }))
+        }
+    })
+})
+
+
 
 const gravity = 0.5
 
 
 const player = new Cat({
     position: {
-        x: 60,
+        x: 50,
         y: 0,
     },
+    collisionBlocks: collisionBlocks,
+    imageSrc: './images/cat-idle.png',
 });
 
 const keys = {
@@ -37,8 +72,12 @@ function animate() {
     c.scale(4, 4);
     c.translate(0, -background.image.height + scaledC.height)
     background.update();
-    c.restore();
-
+    collisionBlocks.forEach(collisionBlock => {
+        collisionBlock.update();
+    })
+    platformCollisionBlocks.forEach(block => {
+        block.update();
+    })
     player.spawn();
     player.movement.x = 0;
     if (keys.d.pressed) {
@@ -46,6 +85,9 @@ function animate() {
     } else if (keys.a.pressed) {
         player.movement.x = -4;
     }
+    c.restore();
+
+
 }
 
 animate();
@@ -56,7 +98,7 @@ window.addEventListener("keydown", (event) => {
     } else if (event.key === "a") {
         keys.a.pressed = true;
     } else if (event.key === "w") {
-        player.movement.y = -15;
+        player.movement.y = -8;
     }
 })
 window.addEventListener("keyup", (event) => {
