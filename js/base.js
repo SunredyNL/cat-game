@@ -4,49 +4,47 @@ const c = canvas.getContext("2d");
 canvas.width = 1024
 canvas.height = 576
 
-const gravity = 0.5
-
-class Cat {
-    constructor(position) {
-        this.position = position
-        this.movement = {
-            x: 0,
-            y: 1,
-        }
-        this.height = 100;
-    }
-    design() {
-        c.fillStyle = "red"
-        c.fillRect(this.position.x, this.position.y, 100, this.height);
-    }
-    spawn() {
-        this.design()
-        this.position.y += this.movement.y;
-        this.position.x += this.movement.x;
-        if (this.position.y + this.height + this.movement.y < canvas.height) {
-            this.movement.y += gravity;
-        } else {
-            this.movement.y = 0;
-        }
-    }
+const scaledC = {
+    width: canvas.width / 4,
+    height: canvas.height / 4
 }
 
-const player = new Cat({ x: 0, y: 0 });
+
+const gravity = 0.5
+
+
+const player = new Cat({
+    position: {
+        x: 60,
+        y: 0,
+    },
+});
 
 const keys = {
     d: { pressed: false },
     a: { pressed: false }
 }
+const background = new Sprite({
+    position: { x: 0, y: 0 },
+    imageSrc: './images/background.png',
+})
+
 function animate() {
     window.requestAnimationFrame(animate)
     c.fillStyle = "white";
     c.fillRect(0, 0, canvas.width, canvas.height);
+    c.save();
+    c.scale(4, 4);
+    c.translate(0, -background.image.height + scaledC.height)
+    background.update();
+    c.restore();
+
     player.spawn();
     player.movement.x = 0;
     if (keys.d.pressed) {
-        player.movement.x = 1
+        player.movement.x = 4
     } else if (keys.a.pressed) {
-        player.movement.x = -1;
+        player.movement.x = -4;
     }
 }
 
