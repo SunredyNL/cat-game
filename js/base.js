@@ -48,11 +48,51 @@ const gravity = 0.5
 
 const player = new Cat({
     position: {
-        x: 50,
-        y: 0,
+        x: 85,
+        y: 300,
     },
     collisionBlocks: collisionBlocks,
+    platformCollisionBlocks: platformCollisionBlocks,
     imageSrc: './images/cat-idle.png',
+    frameRate: 8,
+    animations: {
+        Idle: {
+            imageSrc: './images/cat-idle.png',
+            frameRate: 8,
+            image: new Image(),
+            frameBuffer: 8,
+        },
+        Run: {
+            imageSrc: './images/walking.png',
+            frameRate: 8,
+            frameBuffer: 7,
+        },
+        Jump: {
+            imageSrc: './images/catjump.png',
+            frameRate: 4,
+            frameBuffer: 10,
+        },
+        Fall: {
+            imageSrc: './images/catfall.png',
+            frameRate: 4,
+            frameBuffer: 10,
+        },
+        RunLeft: {
+            imageSrc: './images/walkingleft.png',
+            frameRate: 8,
+            frameBuffer: 7,
+        },
+        JumpLeft: {
+            imageSrc: './images/catjumpleft.png',
+            frameRate: 4,
+            frameBuffer: 10,
+        },
+        FallLeft: {
+            imageSrc: './images/catfallleft.png',
+            frameRate: 4,
+            frameBuffer: 10,
+        },
+    }
 });
 
 const keys = {
@@ -63,14 +103,19 @@ const background = new Sprite({
     position: { x: 0, y: 0 },
     imageSrc: './images/background.png',
 })
-
+const camera = {
+    position: {
+        x: 0,
+        y: -432 + scaledC.height,
+    }
+}
 function animate() {
     window.requestAnimationFrame(animate)
     c.fillStyle = "white";
     c.fillRect(0, 0, canvas.width, canvas.height);
     c.save();
     c.scale(4, 4);
-    c.translate(0, -background.image.height + scaledC.height)
+    c.translate(camera.position.x, camera.position.y)
     background.update();
     collisionBlocks.forEach(collisionBlock => {
         collisionBlock.update();
@@ -81,10 +126,26 @@ function animate() {
     player.spawn();
     player.movement.x = 0;
     if (keys.d.pressed) {
-        player.movement.x = 4
+        player.switchSprite("Run");
+        player.movement.x = 2
+        player.shouldPanCameraToTheLeft({ canvas, camera });
     } else if (keys.a.pressed) {
-        player.movement.x = -4;
+        player.switchSprite("RunLeft");
+        player.movement.x = -2;
+        player.shouldPanCameraToTheRight({ canvas, camera });
+    } else if (player.movement.y === 0) {
+        player.switchSprite("Idle");
     }
+    if (player.movement.y < 0) {
+        player.switchSprite("Jump")
+        player.shouldPanCameraDown({ canvas, camera })
+    }
+    else if (player.movement.y > 0) {
+        player.switchSprite("Fall")
+        player.shouldPanCameraUp({ camera, canvas })
+    }
+    if (player.movement.y < 0 && keys.a.pressed) player.switchSprite("JumpLeft");
+    else if (player.movement.y > 0 && keys.a.pressed) player.switchSprite("FallLeft");
     c.restore();
 
 
