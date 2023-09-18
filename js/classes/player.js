@@ -80,6 +80,7 @@ class Cat extends Sprite {
         this.gravity();
         this.updateHitbox();
         this.checkForVerticialCollisions();
+
     }
 
     updateHitbox() {
@@ -92,6 +93,7 @@ class Cat extends Sprite {
             height: 11,
         }
     }
+
     checkForHorizontalCollisions() {
         for (let i = 0; i < this.collisionBlocks.length; i += 1) {
             const collisionBlock = this.collisionBlocks[i];
@@ -146,7 +148,6 @@ class Cat extends Sprite {
                 }
             }
         }
-        // platform
         for (let i = 0; i < this.platformCollisionBlocks.length; i += 1) {
             const platformCollisionBlock = this.platformCollisionBlocks[i];
             if (

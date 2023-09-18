@@ -5,7 +5,19 @@
 </head>
 
 <body>
-    <canvas></canvas>
+    <div id="start">
+        <img class="cat-bed" src=./images/cat-bed.png>
+        <button id="start-button">Start Game</button>
+        <p class="instructions">Use W(jump), A(left) and D(right) to help this little kitty get home!</p>
+    </div>
+    <div id="game-screen">
+        <div id="health">
+            <img class="h1" src="images/tile_0044.png">
+            <img class="h2" src="images/tile_0044.png">
+            <img class="h3" src="images/tile_0044.png">
+        </div>
+        <canvas id="game"></canvas>
+    </div>
     <script src="js/functions.js"></script>
     <script src="js/classes/CollisionBlock.js"></script>
     <script src="js/classes/sprite.js"></script>

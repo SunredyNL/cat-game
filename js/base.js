@@ -1,3 +1,7 @@
+const startButton = document.getElementById('start-button')
+const startScreen = document.getElementById('start')
+const healthV = document.getElementById('health')
+
 const canvas = document.querySelector("canvas");
 const c = canvas.getContext("2d");
 
@@ -8,10 +12,25 @@ const scaledC = {
     width: canvas.width / 4,
     height: canvas.height / 4
 }
+const spikes2D = [];
+for (let i = 0; i < spikesLayout.length; i += 32) {
+    spikes2D.push(spikesLayout.slice(i))
+}
+const spikeBlocks = []
+spikes2D.forEach((row, y) => {
+    row.forEach((symbol, x) => {
+        if (symbol === 69) {
+            spikeBlocks.push(new SpikeBlock({
+                position: { x: x * 18, y: y * 18 }
+            }))
+        }
+    })
+})
+
 
 const floorCollisions2D = [];
-for (let i = 0; i < floorCollisions.length; i += 32) {
-    floorCollisions2D.push(floorCollisions.slice(i, i + 32))
+for (let i = 0; i < floorCollisions.length; i += 34) {
+    floorCollisions2D.push(floorCollisions.slice(i, i + 34))
 }
 
 const collisionBlocks = [];
@@ -150,8 +169,16 @@ function animate() {
 
 
 }
+startButton.addEventListener("click", function () {
+    startScreen.style.display = "none";
+    canvas.style.display = "block";
+    healthV.style.display = "block";
+    animate();
+})
 
-animate();
+
+
+let jumpLimit = 0
 
 window.addEventListener("keydown", (event) => {
     if (event.key === "d") {
@@ -159,7 +186,13 @@ window.addEventListener("keydown", (event) => {
     } else if (event.key === "a") {
         keys.a.pressed = true;
     } else if (event.key === "w") {
-        player.movement.y = -8;
+        jumpLimit += 1
+        if (jumpLimit < 2) {
+            player.movement.y = -9;
+            setTimeout(() => {
+                jumpLimit = 0;
+            }, 500)
+        }
     }
 })
 window.addEventListener("keyup", (event) => {
