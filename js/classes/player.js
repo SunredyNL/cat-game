@@ -209,7 +209,7 @@ class Cat extends Sprite {
     }
     gameOver() {
         if (this.health === 0) {
-            window.location = "./lost.html"
+            window.location = "./add/lost.html"
         }
     }
 }
