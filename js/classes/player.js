@@ -1,5 +1,5 @@
 class Cat extends Sprite {
-    constructor({ position, collisionBlocks, platformCollisionBlocks, spikeBlocks, imageSrc, frameRate, scale = 0.75, animations, health }) {
+    constructor({ position, collisionBlocks, platformCollisionBlocks, spikeBlocks, winBlocks, imageSrc, frameRate, scale = 0.75, animations, health }) {
         super({ imageSrc, frameRate, scale });
         this.position = position
         this.movement = {
@@ -9,6 +9,7 @@ class Cat extends Sprite {
         this.platformCollisionBlocks = platformCollisionBlocks;
         this.collisionBlocks = collisionBlocks;
         this.spikeBlocks = spikeBlocks;
+        this.winBlocks = winBlocks;
         this.animations = animations
         this.health = 3
 
@@ -83,7 +84,7 @@ class Cat extends Sprite {
         this.updateHitbox();
         this.checkForVerticialCollisions();
         this.checkForSpikes();
-
+        this.checkForWin();
     }
 
     updateHitbox() {
@@ -207,9 +208,25 @@ class Cat extends Sprite {
 
         }
     }
+
+    checkForWin() {
+        for (let i = 0; i < this.winBlocks.length; i += 1) {
+            const winBlock = this.winBlocks[i];
+            if (
+                win({
+                    object1: this.hitbox, object2: winBlock
+                })
+            ) {
+                window.location = "./add/won1.html"
+            }
+        }
+    }
+
     gameOver() {
         if (this.health === 0) {
             window.location = "./add/lost.html"
         }
     }
+
+
 }

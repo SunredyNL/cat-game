@@ -63,6 +63,16 @@ spikes2D.forEach((row, y) => {
     })
 })
 
+const winBlocks = []
+spikes2D.forEach((row, y) => {
+    row.forEach((symbol, x) => {
+        if (symbol === 206) {
+            winBlocks.push(new WinBlock({
+                position: { x: x * 18, y: y * 18 }
+            }))
+        }
+    })
+})
 
 let hit = false;
 const gravity = 0.5
@@ -76,6 +86,7 @@ const player = new Cat({
     collisionBlocks: collisionBlocks,
     platformCollisionBlocks: platformCollisionBlocks,
     spikeBlocks: spikeBlocks,
+    winBlocks: winBlocks,
     imageSrc: './images/cat-idle.png',
     frameRate: 8,
     animations: {
@@ -115,12 +126,18 @@ const player = new Cat({
             frameRate: 4,
             frameBuffer: 10,
         },
+        CatWoman: {
+            imageSrc: './images/catwoman.png',
+            frameRate: 2,
+            frameBuffer: 10,
+        },
     }
 });
 
 const keys = {
     d: { pressed: false },
-    a: { pressed: false }
+    a: { pressed: false },
+    m: { pressed: false }
 }
 const background = new Sprite({
     position: { x: 0, y: 0 },
@@ -149,6 +166,9 @@ function animate() {
     spikeBlocks.forEach((spikeBlock) => {
         spikeBlock.update();
     })
+    winBlocks.forEach((winBlock) => {
+        winBlock.update();
+    })
     player.spawn();
     player.movement.x = 0;
     if (keys.d.pressed) {
@@ -159,6 +179,8 @@ function animate() {
         player.switchSprite("RunLeft");
         player.movement.x = -2;
         player.shouldPanCameraToTheRight({ canvas, camera });
+    } else if (keys.m.pressed) {
+        player.switchSprite("CatWoman");
     } else if (player.movement.y === 0) {
         player.switchSprite("Idle");
     }
@@ -189,6 +211,8 @@ window.addEventListener("keydown", (event) => {
         keys.d.pressed = true;
     } else if (event.key === "a") {
         keys.a.pressed = true;
+    } else if (event.key === "m") {
+        keys.m.pressed = true
     } else if (event.key === "w") {
         jumpLimit += 1
         if (jumpLimit < 2) {
@@ -204,5 +228,7 @@ window.addEventListener("keyup", (event) => {
         keys.d.pressed = false;
     } else if (event.key === "a") {
         keys.a.pressed = false;
+    } else if (event.key === "m") {
+        keys.m.pressed = false;
     }
 })
