@@ -31,8 +31,6 @@ class WinBlock {
         this.height = 18;
     }
     draw() {
-        c.fillStyle = "rgba(255,0,0,0.5)"
-        c.fillRect(this.position.x, this.position.y, this.width, this.height)
     }
     update() {
         this.draw();
