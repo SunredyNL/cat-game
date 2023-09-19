@@ -1,5 +1,5 @@
 class Cat extends Sprite {
-    constructor({ position, collisionBlocks, platformCollisionBlocks, imageSrc, frameRate, scale = 0.75, animations }) {
+    constructor({ position, collisionBlocks, platformCollisionBlocks, spikeBlocks, imageSrc, frameRate, scale = 0.75, animations, health }) {
         super({ imageSrc, frameRate, scale });
         this.position = position
         this.movement = {
@@ -8,7 +8,9 @@ class Cat extends Sprite {
         }
         this.platformCollisionBlocks = platformCollisionBlocks;
         this.collisionBlocks = collisionBlocks;
+        this.spikeBlocks = spikeBlocks;
         this.animations = animations
+        this.health = 3
 
         for (let key in this.animations) {
             const image = new Image();
@@ -80,6 +82,7 @@ class Cat extends Sprite {
         this.gravity();
         this.updateHitbox();
         this.checkForVerticialCollisions();
+        this.checkForSpikes();
 
     }
 
@@ -171,6 +174,42 @@ class Cat extends Sprite {
                     break;
                 }
             }
+        }
+    }
+    checkForSpikes() {
+        for (let i = 0; i < this.spikeBlocks.length; i += 1) {
+            const spikeBlock = this.spikeBlocks[i];
+            if (
+                spiked({
+                    object1: this.hitbox, object2: spikeBlock
+                })
+            ) {
+                if (hit == false) {
+                    this.health -= 1;
+                    if (this.health === 2) {
+                        h1.style.display = "none";
+                        h2.style.display = "block";
+                        setTimeout(() => {
+                            hit = false;
+                        }, 800)
+                    } else if (this.health === 1) {
+                        h2.style.display = "none";
+                        h3.style.display = "block";
+                        setTimeout(() => {
+                            hit = false;
+                        }, 800)
+                    }
+                    console.log(this.health);
+                    hit = true;
+                    this.gameOver()
+                }
+            }
+
+        }
+    }
+    gameOver() {
+        if (this.health === 0) {
+            window.location = "./lost.html"
         }
     }
 }

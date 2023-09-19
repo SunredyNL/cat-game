@@ -1,6 +1,9 @@
 const startButton = document.getElementById('start-button')
 const startScreen = document.getElementById('start')
 const healthV = document.getElementById('health')
+const fullH = document.getElementById('h1')
+const twoHearts = document.getElementById('h2')
+const oneHearts = document.getElementById('h3')
 
 const canvas = document.querySelector("canvas");
 const c = canvas.getContext("2d");
@@ -12,21 +15,6 @@ const scaledC = {
     width: canvas.width / 4,
     height: canvas.height / 4
 }
-const spikes2D = [];
-for (let i = 0; i < spikesLayout.length; i += 32) {
-    spikes2D.push(spikesLayout.slice(i))
-}
-const spikeBlocks = []
-spikes2D.forEach((row, y) => {
-    row.forEach((symbol, x) => {
-        if (symbol === 69) {
-            spikeBlocks.push(new SpikeBlock({
-                position: { x: x * 18, y: y * 18 }
-            }))
-        }
-    })
-})
-
 
 const floorCollisions2D = [];
 for (let i = 0; i < floorCollisions.length; i += 34) {
@@ -59,9 +47,24 @@ platformCollisions2D.forEach((row, y) => {
         }
     })
 })
+const spikes2D = [];
+for (let i = 0; i < spikesLayout.length; i += 32) {
+    spikes2D.push(spikesLayout.slice(i, i + 32));
+}
+
+const spikeBlocks = []
+spikes2D.forEach((row, y) => {
+    row.forEach((symbol, x) => {
+        if (symbol === 69) {
+            spikeBlocks.push(new SpikeBlock({
+                position: { x: x * 18, y: y * 18 }
+            }))
+        }
+    })
+})
 
 
-
+let hit = false;
 const gravity = 0.5
 
 
@@ -72,6 +75,7 @@ const player = new Cat({
     },
     collisionBlocks: collisionBlocks,
     platformCollisionBlocks: platformCollisionBlocks,
+    spikeBlocks: spikeBlocks,
     imageSrc: './images/cat-idle.png',
     frameRate: 8,
     animations: {
@@ -142,6 +146,9 @@ function animate() {
     platformCollisionBlocks.forEach(block => {
         block.update();
     })
+    spikeBlocks.forEach((spikeBlock) => {
+        spikeBlock.update();
+    })
     player.spawn();
     player.movement.x = 0;
     if (keys.d.pressed) {
@@ -167,7 +174,6 @@ function animate() {
     else if (player.movement.y > 0 && keys.a.pressed) player.switchSprite("FallLeft");
     c.restore();
 
-
 }
 startButton.addEventListener("click", function () {
     startScreen.style.display = "none";
@@ -175,8 +181,6 @@ startButton.addEventListener("click", function () {
     healthV.style.display = "block";
     animate();
 })
-
-
 
 let jumpLimit = 0
 
