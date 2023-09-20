@@ -1,5 +1,5 @@
 class Cat extends Sprite {
-    constructor({ position, collisionBlocks, platformCollisionBlocks, spikeBlocks, winBlocks, imageSrc, frameRate, scale = 0.75, animations, health }) {
+    constructor({ position, collisionBlocks, platformCollisionBlocks, spikeBlocks, winBlocks, imageSrc, frameRate, scale = 0.75, animations, health, hurtSound, winSound }) {
         super({ imageSrc, frameRate, scale });
         this.position = position
         this.movement = {
@@ -12,6 +12,8 @@ class Cat extends Sprite {
         this.winBlocks = winBlocks;
         this.animations = animations
         this.health = 3
+        this.hurtSound = new Audio("./sounds/catmeow.mp3")
+        this.winSound = new Audio("./sounds/gamefinish.mp3")
 
         for (let key in this.animations) {
             const image = new Image();
@@ -187,6 +189,7 @@ class Cat extends Sprite {
             ) {
                 if (hit == false) {
                     this.health -= 1;
+                    this.hurtSound.play();
                     if (this.health === 2) {
                         h1.style.display = "none";
                         h2.style.display = "block";
@@ -217,7 +220,11 @@ class Cat extends Sprite {
                     object1: this.hitbox, object2: winBlock
                 })
             ) {
-                window.location = "./add/won1.html"
+                this.winSound.play();
+                setTimeout(() => {
+                    window.location = "./add/won1.html"
+                }, 4000)
+
             }
         }
     }

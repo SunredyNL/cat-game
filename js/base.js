@@ -7,7 +7,7 @@ const oneHearts = document.getElementById('h3')
 
 const canvas = document.querySelector("canvas");
 const c = canvas.getContext("2d");
-
+let gameSound = new Audio("./sounds/gamesound.mp3")
 canvas.width = 1024
 canvas.height = 576
 
@@ -151,6 +151,7 @@ const camera = {
 }
 function animate() {
     window.requestAnimationFrame(animate)
+    gameSound.play();
     c.fillStyle = "white";
     c.fillRect(0, 0, canvas.width, canvas.height);
     c.save();
